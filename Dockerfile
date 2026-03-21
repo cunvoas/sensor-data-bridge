@@ -1,11 +1,11 @@
 # ---------- Stage 1: Build ----------
-FROM openjdk:17-jdk-slim AS builder
+FROM eclipse-temurin:17-jdk AS builder
 WORKDIR /app
 
-# Installer git pour cloner le repo et unzip pour gradle wrapper
+# Installer git et unzip pour Gradle wrapper
 RUN apt-get update && apt-get install -y git unzip && rm -rf /var/lib/apt/lists/*
 
-# Cloner le repo directement depuis GitHub
+# Cloner le projet
 RUN git clone https://github.com/MathiasVadot/sensor-data-bridge.git .
 
 # Donner les droits d'exécution au wrapper Gradle
@@ -15,13 +15,13 @@ RUN chmod +x ./gradlew
 RUN ./gradlew build -x test --no-daemon
 
 # ---------- Stage 2: Runtime ----------
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
 # Copier le JAR généré depuis l'étape précédente
 COPY --from=builder /app/build/libs/sensor-data-bridge.jar ./sensor-data-bridge.jar
 
-# Exposer le port par défaut si nécessaire
+# Exposer le port par défaut
 EXPOSE 8080
 
 # Lancer l'application
