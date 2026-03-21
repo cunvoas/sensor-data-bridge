@@ -1,11 +1,11 @@
 ---
 ttn:
-  mqtt_url: "tcp://eu1.cloud.thethings.network"
+  mqtt_url: "tcp://eu1.cloud.thethings.network:1883"
   identity_server_url: "https://eu1.cloud.thethings.network"
   identity_server_timeout: 30
   apps:
-  - name: "meet-je-stad"
-    key: "secret"
+  - name: "sensorcommunity-mkr1310"
+    key: "7F4PO63TKAF7I24UP6HHR33GKHWOA5NKW25ZZNA"
     decoder:
       encoding: "JSON"
       properties:
