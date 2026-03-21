@@ -13,9 +13,11 @@ RUN apt-get update && apt-get install -y bash unzip curl git && rm -rf /var/lib/
 WORKDIR /opt/sensor-data-bridge
 COPY . .
 
-# Rendre gradlew exécutable et builder le projet
+# Rendre gradlew exécutable
 RUN chmod +x gradlew
-RUN ./gradlew build
+
+# Build du jar sans tests pour éviter blocage cloud
+RUN ./gradlew build -x test --no-daemon
 
 # Exposer le port
 EXPOSE 8080
