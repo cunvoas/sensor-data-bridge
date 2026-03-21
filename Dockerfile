@@ -19,7 +19,7 @@ COPY . .
 RUN chmod +x gradlew
 
 # Build du jar sans tests et en ignorant l'absence de Git
-RUN ./gradlew build -x test --no-daemon -Pgit.commit.id.ignore=true
+RUN ./gradlew build -x test --no-daemon -Pgit.commit.id.ignore=true --stacktrace --info
 
 # ---------- Stage 2: Runtime ----------
 FROM eclipse-temurin:21-jdk AS runtime
