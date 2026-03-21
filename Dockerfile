@@ -1,14 +1,12 @@
-FROM eclipse-temurin:21.0.8_9-jre-alpine
-
 LABEL maintainer="MV"
 LABEL org.opencontainers.image.source="https://github.com/MathiasVadot/sensor-data-bridge/"
 LABEL org.opencontainers.image.description="Receives sensor data over TTN and forwards it to sensor.community"
 LABEL org.opencontainers.image.licenses="MIT"
 
-# Installer bash et unzip pour Gradle
+# Installer outils nécessaires
 RUN apk add --no-cache bash unzip curl git
 
-# Copier tout le projet dans le conteneur
+# Copier projet
 WORKDIR /opt/sensor-data-bridge
 COPY . .
 
@@ -16,8 +14,8 @@ COPY . .
 RUN chmod +x gradlew
 RUN ./gradlew build
 
-# Exposer le port 8080
+# Exposer le port
 EXPOSE 8080
 
-# Entrypoint vers le jar généré
+# Entrypoint vers le jar
 ENTRYPOINT ["java","-jar","build/libs/sensor-data-bridge.jar"]
