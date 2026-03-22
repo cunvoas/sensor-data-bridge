@@ -5,24 +5,25 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y git
 
-# Clone repo
 RUN git clone https://github.com/MathiasVadot/sensor-data-bridge.git .
 
 RUN chmod +x ./gradlew
 
-# Supprimer le plugin git-version
-RUN sed -i '/com.palantir.git-version/d' sensor-data-bridge/sensor-data-bridge/build.gradle
+# ✅ bon chemin
+RUN sed -i '/com.palantir.git-version/d' sensor-data-bridge/build.gradle
 
-# ⚠️ Build du BON module
+# ✅ build du module
 RUN ./gradlew :sensor-data-bridge:installDist -x test --no-daemon
 
 # ---------- Stage 2: Runtime ----------
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:21.0.8_9-jre-alpine
 
-WORKDIR /app
+WORKDIR /opt
 
-COPY --from=builder /app/sensor-data-bridge/sensor-data-bridge/build/install/sensor-data-bridge /app/sensor-data-bridge
+COPY --from=builder /app/sensor-data-bridge/build/distributions/sensor-data-bridge.tar .
 
-WORKDIR /app/sensor-data-bridge
+RUN tar -xvf sensor-data-bridge.tar
 
-ENTRYPOINT ["./bin/sensor-data-bridge"]
+WORKDIR /opt/sensor-data-bridge
+
+ENTRYPOINT ["/opt/sensor-data-bridge/bin/sensor-data-bridge"]
