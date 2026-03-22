@@ -1,28 +1,30 @@
 # ---------- Stage 1: Build ----------
-FROM eclipse-temurin:17-jdk AS builder
+FROM eclipse-temurin:21-jdk AS builder
 WORKDIR /app
 
-# Installer git et unzip pour Gradle wrapper
+# Installer git (nécessaire pour le plugin git-version)
 RUN apt-get update && apt-get install -y git unzip && rm -rf /var/lib/apt/lists/*
 
-# Cloner le projet
+# Cloner le repo COMPLET avec .git
 RUN git clone https://github.com/MathiasVadot/sensor-data-bridge.git .
 
-# Donner les droits d'exécution au wrapper Gradle
+# Donner les droits à gradlew
 RUN chmod +x ./gradlew
 
-# Build du JAR sans tests
-RUN ./gradlew build -x test --no-daemon
+# Build de la distribution (IMPORTANT)
+RUN ./gradlew installDist -x test --no-daemon
 
 # ---------- Stage 2: Runtime ----------
-FROM eclipse-temurin:17-jdk
-WORKDIR /app
+FROM eclipse-temurin:21-jre-alpine
 
-# Copier le JAR généré depuis l'étape précédente
-COPY --from=builder /app/build/libs/sensor-data-bridge.jar ./sensor-data-bridge.jar
+WORKDIR /opt
 
-# Exposer le port par défaut
-EXPOSE 8080
+# Copier la distribution générée
+COPY --from=builder /app/sensor-data-bridge/build/distributions/sensor-data-bridge.tar /opt/
 
-# Lancer l'application
-CMD ["java", "-jar", "sensor-data-bridge.jar"]
+# Extraire
+RUN tar -xvf sensor-data-bridge.tar && rm sensor-data-bridge.tar
+
+WORKDIR /opt/sensor-data-bridge
+
+ENTRYPOINT ["/opt/sensor-data-bridge/bin/sensor-data-bridge"]
