@@ -1,7 +1,8 @@
 package nl.sikken.bertrik.cayenne;
 
 /**
- * Cayenne parsing exception.
+ * <b>FR :</b> Exception levée lors d’erreurs de parsing Cayenne.<br>
+ * <b>EN :</b> Exception thrown during Cayenne parsing errors.
  */
 public class CayenneException extends Exception {
 

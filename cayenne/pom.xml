@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>nl.bertriksikken</groupId>
+        <artifactId>sensor-data-bridge-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>cayenne</artifactId>
+    <name>cayenne</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-reload4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+
+<profiles>
+
+    <!-- deps analysis for security -->
+    <profile>
+      <id>OWASP</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>12.2.1</version>
+            <configuration>
+              <failBuildOnCVSS>8</failBuildOnCVSS>
+              <!-- Configuration sécurisée de la clé API NVD -->
+              <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+              <!-- Délai entre les requêtes API (recommandé avec clé API) -->
+              <nvdApiDelay>4000</nvdApiDelay>
+              <!-- Timeout pour les connexions -->
+              <connectionTimeout>30000</connectionTimeout>
+              <!-- Timeout pour les requêtes réseau -->
+              <readTimeout>30000</readTimeout>
+              <!-- Configuration pour éviter les problèmes de verrouillage H2 -->
+              <autoUpdate>true</autoUpdate>
+              <!-- Ne pas échouer si la base de données ne peut pas être mise à jour -->
+              <failOnError>false</failOnError>
+              <!-- Format des rapports -->
+              <formats>
+                <format>HTML</format>
+                <format>JSON</format>
+              </formats>
+              
+              <!-- Répertoire de sortie des rapports -->
+              <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
+              <!-- Exclure certains types de fichiers pour améliorer les performances -->
+              <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+              <nuspecAnalyzerEnabled>false</nuspecAnalyzerEnabled>
+              <nugetconfAnalyzerEnabled>false</nugetconfAnalyzerEnabled>
+              
+              <!-- Exclusions pour réduire les faux positifs -->
+              <suppressionFile>../owasp-dependency-check-suppressions.xml</suppressionFile>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    </profiles>
+</project>

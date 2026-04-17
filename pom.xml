@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>nl.bertriksikken</groupId>
+    <artifactId>sensor-data-bridge-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>sensor-data-bridge</name>
+
+    <modules>
+        <module>cayenne</module>
+        <module>sensor-data-bridge</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        
+        <env.NVD_API_KEY>{$NVD_API_KEY}</env.NVD_API_KEY>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- JUnit BOM -->
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>6.0.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- SLF4J -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>2.0.17</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-reload4j</artifactId>
+                <version>2.0.17</version>
+            </dependency>
+
+            <!-- Jackson -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.21.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>2.21.1</version>
+            </dependency>
+
+            <!-- Retrofit -->
+            <dependency>
+                <groupId>com.squareup.retrofit2</groupId>
+                <artifactId>retrofit</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.retrofit2</groupId>
+                <artifactId>converter-jackson</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.retrofit2</groupId>
+                <artifactId>converter-scalars</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.retrofit2</groupId>
+                <artifactId>retrofit-mock</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+
+            <!-- Jersey -->
+            <dependency>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>4.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-jetty-http</artifactId>
+                <version>4.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-server</artifactId>
+                <version>4.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.inject</groupId>
+                <artifactId>jersey-hk2</artifactId>
+                <version>4.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-jackson</artifactId>
+                <version>4.0.2</version>
+            </dependency>
+
+            <!-- MQTT -->
+            <dependency>
+                <groupId>org.eclipse.paho</groupId>
+                <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+                <version>1.2.5</version>
+            </dependency>
+
+            <!-- Error Prone -->
+            <dependency>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>2.49.0</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Mockito -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>5.22.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Internal module -->
+            <dependency>
+                <groupId>nl.bertriksikken</groupId>
+                <artifactId>cayenne</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Common dependencies for all submodules -->
+    <dependencies>
+        <dependency>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.13.0</version>
+                    <configuration>
+                        <source>21</source>
+                        <target>21</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.5.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.4.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.7.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+
+  <profiles>
+
+    <!-- SonarQube Quality Analysis Profile -->
+    <profile>
+      <id>sonar</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      
+      <properties>
+        <!-- SonarQube configuration - Essential properties in pom.xml -->
+        <!-- Server configuration must be in pom.xml for Maven plugin -->
+        <sonar.host.url>http://192.168.1.20:9000</sonar.host.url>
+        <sonar.organization>LM Oxygène</sonar.organization>
+        <sonar.projectKey>sensor-atmo</sonar.projectKey>
+        
+        <!-- Authentication token - REQUIRED for SonarQube analysis -->
+        <!-- Generate a token from SonarQube UI: Administration → Security → Users → Tokens -->
+        <!-- Then set it via command line: -Dsonar.token=your_generated_token -->
+        <sonar.token>${sonar.token}</sonar.token>
+        
+        <!-- Additional configuration is externalized in sonar-project.properties -->
+        <!-- Override properties can be set here if needed -->
+        <!-- Example: <sonar.projectVersion>${project.version}</sonar.projectVersion> -->
+        
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+      </properties>
+      
+      <build>
+        <plugins>
+          <!-- JaCoCo plugin for test coverage - Enhanced configuration -->
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.12</version>
+            <configuration>
+              <excludes>
+                <!-- Exclusions pour code auto-généré -->
+                <exclude>**/generated/**</exclude>
+                <exclude>**/target/**</exclude>
+                <exclude>**/build/**</exclude>
+                
+                <!-- Exclusions pour classes de test -->
+                <exclude>**/Test*.*</exclude>
+                <exclude>**/*Test.*</exclude>
+                <exclude>**/*Tests.*</exclude>
+                <exclude>**/*TestCase.*</exclude>
+                <exclude>**/*IT.*</exclude>
+                <exclude>**/*Spec.*</exclude>
+                
+                <!-- Exclusions pour DTOs et entités (souvent sans logique)  -->
+                <exclude>**/dto/**</exclude>
+                <exclude>**/entity/**</exclude>
+                <exclude>**/model/**</exclude>
+                <exclude>**/*DTO.*</exclude>
+                <exclude>**/*Entity.*</exclude>
+                <exclude>**/*Model.*</exclude>
+               
+                
+                <!-- Exclusions pour configuration  -->
+                <exclude>**/config/**</exclude>
+                <exclude>**/*Config.*</exclude>
+                <exclude>**/*Configuration.*</exclude>
+                <exclude>**/*Application.*</exclude>
+               
+                
+                <!-- Exclusions pour exceptions -->
+                <exclude>**/exception/**</exclude>
+                <exclude>**/*Exception.*</exclude>
+             
+                
+              </excludes>
+            </configuration>
+            
+            <executions>
+              <execution>
+                <id>prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>prepare-agent-integration</id>
+                <goals>
+                  <goal>prepare-agent-integration</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>jacoco-site</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>jacoco-integration</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>report-integration</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>jacoco-check</id>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <rule>
+                      <element>PACKAGE</element>
+                      <limits>
+                        <limit>
+                          <counter>LINE</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.80</minimum>
+                        </limit>
+                      </limits>
+                    </rule>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          
+          <!-- SonarQube plugin -->
+          <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>4.0.0.4121</version>
+            <configuration>
+              <!-- Configuration file reference -->
+              <!-- The plugin will automatically read sonar-project.properties from project root -->
+              <!-- Additional properties can be overridden via -D parameters -->
+            </configuration>
+          </plugin>
+          
+          <!-- Checkstyle plugin for code style analysis -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.4.0</version>
+            <configuration>
+              <configLocation>google_checks.xml</configLocation>
+              <includeTestSourceDirectory>false</includeTestSourceDirectory>
+              <excludes>**/generated/**,**/target/**,**/build/**,**/bin/**</excludes>
+            </configuration>
+            <executions>
+              <execution>
+                <id>validate</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          
+          <!-- PMD plugin for static code analysis -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>3.25.0</version>
+            <configuration>
+              <includeTests>false</includeTests>
+              <excludes>
+                <exclude>**/generated/**</exclude>
+                <exclude>**/target/**</exclude>
+                <exclude>**/build/**</exclude>
+                <exclude>**/bin/**</exclude>
+              </excludes>
+              <rulesets>
+                <ruleset>/rulesets/java/quickstart.xml</ruleset>
+              </rulesets>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>pmd</goal>
+                  <goal>cpd</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          
+          <!-- SpotBugs plugin for bug pattern detection -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.8.6.4</version>
+            <configuration>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>spotbugs</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+  </profiles>
+  
+  
+</project>

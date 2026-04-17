@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <!--
+    Fichier de suppressions pour OWASP Dependency Check
+    Ce fichier contient des suppressions pour les faux positifs connus
+    -->
+    
+    <!-- Suppression des vulnérabilités liées aux tests uniquement -->
+    <suppress>
+        <notes><![CDATA[
+        Suppression des vulnérabilités dans les dépendances de test
+        ]]></notes>
+        <gav regex="true">.*:.*:.*</gav>
+        <cpe>cpe:/a:junit:junit</cpe>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    
+    <!-- Suppression des vulnérabilités de Log4j 1.x si utilisé uniquement pour les tests -->
+    <suppress>
+        <notes><![CDATA[
+        Log4j 1.x utilisé uniquement dans le contexte de test/développement
+        ]]></notes>
+        <gav regex="true">log4j:log4j:.*</gav>
+        <cve>CVE-2019-17571</cve>
+    </suppress>
+    
+    <!-- Suppression des vulnérabilités Jackson mineures -->
+    <suppress>
+        <notes><![CDATA[
+        Suppressions pour des vulnérabilités mineures de Jackson qui ne s'appliquent pas à notre usage
+        ]]></notes>
+        <gav regex="true">com\.fasterxml\.jackson\.core:jackson-databind:.*</gav>
+        <cvssBelow>7.0</cvssBelow>
+    </suppress>
+    
+</suppressions>

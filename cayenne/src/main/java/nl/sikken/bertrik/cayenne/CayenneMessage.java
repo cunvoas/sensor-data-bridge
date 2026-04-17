@@ -7,8 +7,33 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * A cayenne message containing cayenne data items.
+ * =========================
+ * Section FR (français)
+ * =========================
+ * Représente un message Cayenne Low Power Payload (LPP), utilisé pour l'encodage compact de télémétrie capteur sur LoRaWAN.
+ * <p>
+ * Cette classe permet de parser/construire des paquets Cayenne LPP, supportant les formats DYNAMIC_SENSOR_PAYLOAD et PACKED_SENSOR_PAYLOAD comme utilisés par TTN et de nombreux objets connectés.
+ * <ul>
+ *   <li>Parsing : Décode un tableau brut (payload uplink LoRaWAN utilisant Cayenne LPP) en mesures capteur logiques</li>
+ *   <li>Encodage : Sérialise des objets CayenneItem en tableaux d'octets LPP pour envoi</li>
+ * </ul>
+ * Utilisé par le core sensor-data-bridge pour décoder des messages uplink cloud (ex: TTN MQTT) en objets de mesures haut niveau. Utilisé dans le flux de parsing uplink TTN/MQTT (SensorDataBridge).
+ * </p>
+ *
+ * =========================
+ * Section EN (English)
+ * =========================
+ * Represents a Cayenne Low Power Payload (LPP) message, used for compact sensor telemetry encoding over LoRaWAN.
+ * <p>
+ * This class parses and builds Cayenne LPP data packets, supporting DYNAMIC_SENSOR_PAYLOAD and PACKED_SENSOR_PAYLOAD formats as used in TTN and many IoT devices.
+ * <ul>
+ *   <li>Parsing: Decodes raw byte arrays (uplink payloads from LoRaWAN devices using Cayenne LPP) into logical sensor measurements</li>
+ *   <li>Encoding: Serializes added CayenneItem objects into Cayenne LPP byte arrays for transmission</li>
+ * </ul>
+ * Used by the sensor-data-bridge core to decode cloud uplink messages (e.g., via TTN MQTT) into higher-level measurement objects. Integrates with SensorDataBridge for TTN/MQTT uplink parsing flow.
+ * </p>
  */
+ 
 public final class CayenneMessage {
 
     private final ECayennePayloadFormat format;

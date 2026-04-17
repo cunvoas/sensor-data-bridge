@@ -6,9 +6,10 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Locale;
 
-/**
- * Representation of one measurement item in a cayenne message.
- */
+    /**
+     * <b>FR :</b> Représentation d’une mesure unique sous forme d’item dans un message Cayenne LPP.<br>
+     * <b>EN :</b> Representation of a single measurement item in a Cayenne LPP message.
+     */
 public final class CayenneItem {
 
     private final int channel;
@@ -16,11 +17,12 @@ public final class CayenneItem {
     private final Number[] values;
 
     /**
-     * Constructor.
+     * <b>FR :</b> Constructeur générique.<br>
+     * <b>EN :</b> Generic constructor.
      * 
-     * @param channel the unique channel
-     * @param type    the type
-     * @param values  the values
+     * @param channel canal unique / unique channel
+     * @param type    type de mesure / measurement type
+     * @param values  valeurs / measurement values
      */
     public CayenneItem(int channel, ECayenneItem type, Number[] values) {
         this.channel = channel;
@@ -29,11 +31,12 @@ public final class CayenneItem {
     }
 
     /**
-     * Constructor for a single value
+     * <b>FR :</b> Constructeur pour une mesure unique.<br>
+     * <b>EN :</b> Constructor for a single value measurement.
      * 
-     * @param channel the unique channel
-     * @param type    the type
-     * @param value   the value
+     * @param channel canal unique / unique channel
+     * @param type    type de mesure / measurement type
+     * @param value   valeur unique / single value
      */
     public CayenneItem(int channel, ECayenneItem type, Number value) {
         this(channel, type, new Number[] { value });
@@ -60,11 +63,12 @@ public final class CayenneItem {
     }
 
     /**
-     * Parses one item from the byte buffer and returns it.
+     * <b>FR :</b> Parse un item à partir d’un buffer binaire et le retourne.<br>
+     * <b>EN :</b> Parses an item from a byte buffer and returns it.
      * 
-     * @param bb the byte buffer
-     * @return a new cayenne item
-     * @throws CayenneException if an error occurs during parsing
+     * @param bb buffer binaire source / byte buffer
+     * @return nouvel item Cayenne / new Cayenne item
+     * @throws CayenneException en cas d’erreur de parsing / if an error occurs during parsing
      */
     public static CayenneItem parse(ByteBuffer bb) throws CayenneException {
         try {
@@ -76,11 +80,13 @@ public final class CayenneItem {
     }
 
     /**
-     * Parses one item from the byte buffer and returns it.
+     * <b>FR :</b> Parse un item (format "packed") à partir d’un buffer binaire et le retourne.<br>
+     * <b>EN :</b> Parses a packed item from a byte buffer and returns it.
      * 
-     * @param bb the byte buffer
-     * @return a new cayenne item
-     * @throws CayenneException if an error occurs during parsing
+     * @param bb buffer binaire source / byte buffer
+     * @param channel canal associé / associated channel
+     * @return nouvel item Cayenne / new Cayenne item
+     * @throws CayenneException en cas d’erreur de parsing / if an error occurs during parsing
      */
     public static CayenneItem parsePacked(ByteBuffer bb, int channel) throws CayenneException {
         try {

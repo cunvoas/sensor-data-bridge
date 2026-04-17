@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Exclusions pour code auto-généré -->
+    <Match>
+        <Package name="~.*\.generated\..*"/>
+    </Match>
+    
+    <!-- Exclusions pour classes de test -->
+    <Match>
+        <Class name="~.Test*.*"/>
+    </Match>
+    <Match>
+        <Class name="~.*Test.*"/>
+    </Match>
+    <Match>
+        <Class name="~.*IT.*"/>
+    </Match>
+    <Match>
+        <Class name="~.*Spec.*"/>
+    </Match>
+    
+    <!-- Exclusions pour DTOs et entités (souvent sans logique complexe) -->
+<!--     <Match>
+        <Package name="~.*\.dto\..*"/>
+    </Match>
+    <Match>
+        <Package name="~.*\.entity\..*"/>
+    </Match>
+    <Match>
+        <Package name="~.*\.model\..*"/>
+    </Match>
+    <Match>
+        <Class name="~.*DTO.*"/>
+    </Match>
+    <Match>
+        <Class name="~.*Entity.*"/>
+    </Match>
+    <Match>
+        <Class name="~.*Model.*"/>
+    </Match> -->
+    
+    <!-- Exclusions pour configuration -->
+<!--     <Match>
+        <Package name="~.*\.config\..*"/>
+    </Match>
+    <Match>
+        <Class name="~.*Config.*"/>
+    </Match>
+    <Match>
+        <Class name="~.*Configuration.*"/>
+    </Match>
+    <Match>
+        <Class name="~.*Application.*"/>
+    </Match> -->
+    
+    <!-- Exclusions pour exceptions customisées -->
+<!--     <Match>
+        <Package name="~.*\.exception\..*"/>
+    </Match>
+    <Match>
+        <Class name="~.*Exception.*"/>
+    </Match> -->
+    
+    <!-- Exclusions spécifiques de certaines règles pour les DTOs -->
+<!--     <Match>
+        <Package name="~.*\.dto\..*"/>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match> -->
+</FindBugsFilter>

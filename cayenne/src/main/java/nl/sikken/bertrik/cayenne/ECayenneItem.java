@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 /**
- * Enumeration of possible Cayenne item types.
+ * <b>FR :</b> Enumération des types d’item possibles du protocole Cayenne LPP.<br>
+ * <b>EN :</b> Enumeration of possible Cayenne LPP item types.
  */
 public enum ECayenneItem {
     DIGITAL_INPUT(0, new IntegerFormatter(1, 1, false)), //
@@ -38,10 +39,11 @@ public enum ECayenneItem {
     }
 
     /**
-     * Constructor.
+     * <b>FR :</b> Constructeur du type Cayenne.<br>
+     * <b>EN :</b> Cayenne item type constructor.
      * 
-     * @param type      the data type
-     * @param formatter the formatter for conversion to a string array
+     * @param type code numérique du type / numeric type code
+     * @param formatter formateur associé / associated formatter
      */
     ECayenneItem(int type, IFormatter formatter) {
         this.type = type;
@@ -49,10 +51,11 @@ public enum ECayenneItem {
     }
 
     /**
-     * Parses a type code into an enum.
+     * <b>FR :</b> Analyse un code type entier et retourne l’énumération Cayenne correspondante.<br>
+     * <b>EN :</b> Parses a type code into the corresponding Cayenne enum.
      * 
-     * @param type the type code
-     * @return the enum, or null if not found
+     * @param type code type entier / integer type code
+     * @return l’énumération ou null si non trouvée / enum value, or null if not found
      */
     public static ECayenneItem parse(int type) throws CayenneException {
         ECayenneItem item = LOOKUP.get(type);
@@ -67,30 +70,33 @@ public enum ECayenneItem {
     }
 
     /**
-     * Formats the measurement values into an array of strings.
+     * <b>FR :</b> Formate les valeurs de mesure sous forme de tableau de chaînes de caractères.<br>
+     * <b>EN :</b> Formats measurement values as a string array.
      * 
-     * @param values the values to encode
-     * @return the formatted values
+     * @param values valeurs à encoder / values to encode
+     * @return valeurs formatées / formatted values
      */
     public String[] format(Number[] values) {
         return formatter.format(values);
     }
 
     /**
-     * Parses the contents of the byte buffer into an array of numerical values.
+     * <b>FR :</b> Parse le contenu d’un buffer binaire en un tableau de valeurs numériques.<br>
+     * <b>EN :</b> Parses the content of a byte buffer into an array of numerical values.
      * 
-     * @param bb the byte buffer to parse from
-     * @return the numerical values
+     * @param bb buffer binaire à parser / byte buffer to parse from
+     * @return les valeurs numériques extraites / extracted numerical values
      */
     public Number[] parse(ByteBuffer bb) {
         return formatter.parse(bb);
     }
 
     /**
-     * Encodes an array of numerical values into a byte buffer.
+     * <b>FR :</b> Encode un tableau de valeurs numériques dans un buffer binaire.<br>
+     * <b>EN :</b> Encodes an array of numerical values into a byte buffer.
      * 
-     * @param bb     the byte buffer to encode into
-     * @param values the numerical values
+     * @param bb buffer binaire de destination / destination byte buffer
+     * @param values valeurs numériques à encoder / values to encode
      */
     public void encode(ByteBuffer bb, Number[] values) {
         formatter.encode(bb, values);

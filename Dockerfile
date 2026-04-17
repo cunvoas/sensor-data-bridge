@@ -20,11 +20,21 @@ RUN ./gradlew :sensor-data-bridge:installDist -x test --no-daemon
 
 
 # ---------- Runtime ----------
-FROM eclipse-temurin:21-jre
+FROM  bellsoft/liberica-openjdk-alpine-musl:25-cds
 
 WORKDIR /app
 
+
 # Copier le build
-COPY --from=builder /app/sensor-data-bridge/build/install/sensor-data-bridge /app
+COPY --chown=1001:1001 --from=builder /app/sensor-data-bridge/build/install/sensor-data-bridge /app
+COPY --chown=1001:1001 secret.env .env
+
+# Remove write permissions from copied files for security
+RUN chmod 554 /app/* && chmod 444 /app/.env
+
+USER 1001:1001
+
+#EXPOSE 8980
+
 
 ENTRYPOINT ["bin/sensor-data-bridge"]

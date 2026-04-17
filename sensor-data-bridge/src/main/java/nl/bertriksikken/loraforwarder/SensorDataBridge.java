@@ -41,6 +41,57 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.Manifest;
 
+/**
+ * =========================
+ * Section FR (français)
+ * =========================
+ * Point d'entrée principal de l'application et orchestrateur.
+ *
+ * <p>
+ * SensorDataBridge connecte les équipements LoRaWAN (via The Things Network - TTN) aux plateformes de données aval telles que SensCom et OpenSense. Il prend en charge :
+ * <ul>
+ * <li>Chargement de la configuration (identifiants TTN, backends, config géo, etc) à partir d'une YAML.</li>
+ * <li>Connexion à TTN en MQTT et gestion des payloads uplink pour plusieurs apps, avec encodage/décodage par appli (Cayenne, ULM, JSON, etc).</li>
+ * <li>Maintien de registres d'équipements par app (API REST identity server TTN v3) et résolution des attributs devices.</li>
+ * <li>Décodage des payloads capteur (avec support Cayenne LPP, ULM, etc), extraction des mesures environnementales, et upload vers plusieurs points cloud.</li>
+ * <li>Synchronisation périodique des attributs TTN pour enrichir les données envoyées.</li>
+ * <li>Support des commandes descendantes (bidirectionnelles) sur les ports appropriés.</li>
+ * </ul>
+ * La logique d'acheminement/décodage est configurée et extensible (voir modules Cayenne/ULM pour chaque protocole).
+ * </p>
+ *
+ * <b>Principaux flux :</b>
+ * <ul>
+ * <li>Données uplink reçues par MQTTListener, décodées et uploadées vers les endpoints cloud configurés</li>
+ * <li>Rafraîchissement périodique du registre d'attributs devices, mappé sur chaque app/device, poussé au cloud lors des maj</li>
+ * <li>Gestion des commandes/port downlink (LoRa) pour commandes spécifiques</li>
+ * </ul>
+ *
+ * =========================
+ * Section EN (English)
+ * =========================
+ * Main application entry point and orchestrator.
+ *
+ * <p>
+ * SensorDataBridge connects LoRaWAN devices (via The Things Network - TTN) to downstream data platforms such as SensCom and OpenSense. It is responsible for:
+ * <ul>
+ * <li>Loading configuration (TTN app credentials, backends, geo config, etc) from YAML.</li>
+ * <li>Connecting to TTN via MQTT and handling uplink payloads for multiple apps, using per-app encoding/decoding (Cayenne, ULM, JSON, etc).</li>
+ * <li>Maintaining per-app device registries (using TTN v3 identity server REST API) and resolving device attributes.</li>
+ * <li>Decoding sensor data payloads (including support for the Cayenne LPP and ULM protocols), extracting environmental metrics, and uploading data to multiple cloud endpoints.</li>
+ * <li>Periodic synchronization of TTN device attributes for enriching upstream data.</li>
+ * <li>Supporting bidirectional traffic for device commands on the appropriate port.</li>
+ * </ul>
+ * The actual forwarding/decoding logic is driven by configuration and extensible (see Cayenne and ULM modules for protocol specifics).
+ * </p>
+ *
+ * <b>Main flows:</b>
+ * <ul>
+ * <li>Uplink data received by MQTTListener is decoded and uploaded to configured cloud endpoints</li>
+ * <li>Periodic device attribute registry fetch, mapped to each app/device, push to cloud on update</li>
+ * <li>Command handler for downlink/LoRa commands on specific ports</li>
+ * </ul>
+ */
 public final class SensorDataBridge {
 
     private static final Logger LOG = LoggerFactory.getLogger(SensorDataBridge.class);
