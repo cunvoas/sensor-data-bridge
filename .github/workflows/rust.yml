@@ -1,22 +1,32 @@
-name: Rust
+name: Rust CI
 
 on:
   push:
-    branches: [ "master" ]
+    paths:
+      - 'rust-collector/**'
   pull_request:
-    branches: [ "master" ]
-
-env:
-  CARGO_TERM_COLOR: always
+    paths:
+      - 'rust-collector/**'
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+
+      - name: Build
+        run: cargo build --release
+        working-directory: rust-collector
+
+      - name: Test
+        run: cargo test --all --release
+        working-directory: rust-collector
