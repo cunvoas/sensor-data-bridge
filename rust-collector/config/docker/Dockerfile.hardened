@@ -1,0 +1,27 @@
+# Image minimale pour l'exécution
+FROM gcr.io/distroless/cc-debian12 AS runtime
+
+# Copie du binaire compilé
+COPY --chown=1001:1001 ../../target/release/rust-collector /usr/local/bin/rust-collector
+COPY --chown=1001:1001 secret.env /usr/local/bin/.env
+
+# Application des droit au user:group sur le binaire
+RUN chmod 550 /usr/local/bin/rust-collector
+
+# Application des droit au user:group sur la config
+RUN chmod 440 /usr/local/bin/.env
+
+# Création d'un utilisateur non-root
+USER 1001:1001
+
+# Système de fichiers en lecture seule
+# (distroless est déjà en lecture seule par défaut)
+
+# Variables d'environnement (optionnel, à adapter)
+ENV RUST_LOG=info
+
+# Exposition du port (à adapter si besoin)
+EXPOSE 8080
+
+# Commande d'exécution
+ENTRYPOINT ["/usr/local/bin/rust-collector"]

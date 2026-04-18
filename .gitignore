@@ -3,7 +3,13 @@ tmp/
 bin/
 build/
 
-
+#Rist
+**/Cargo.lock
+**/target
+**/.env
+**/prod.env
+**/uat.env
+**/dev.env
 
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
