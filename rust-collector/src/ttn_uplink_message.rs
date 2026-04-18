@@ -2,9 +2,9 @@
 // Equivalent Rust de la classe Java TtnUplinkMessage
 // Représente un message uplink TTN avec les champs principaux
 
-use std::fmt;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::fmt;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 /// Structure représentant un message TTN uplink

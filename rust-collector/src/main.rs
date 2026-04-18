@@ -1,12 +1,12 @@
 mod ttn_uplink_message;
 
-use actix_web::{web, App, HttpServer, HttpResponse, Responder, post};
-use ttn_uplink_message::TtnUplinkMessage;
-use tokio_postgres::{NoTls, Client};
-use std::sync::Arc;
+use actix_web::{post, web, App, HttpResponse, HttpServer, Responder};
 use dotenv::dotenv;
 use std::env;
+use std::sync::Arc;
 use tokio::signal;
+use tokio_postgres::{Client, NoTls};
+use ttn_uplink_message::TtnUplinkMessage;
 
 #[post("/uplink")]
 async fn uplink_handler(

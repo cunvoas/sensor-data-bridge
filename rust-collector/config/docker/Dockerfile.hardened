@@ -5,10 +5,10 @@ FROM gcr.io/distroless/cc-debian12 AS runtime
 COPY --chown=1001:1001 ../../target/release/rust-collector /usr/local/bin/rust-collector
 COPY --chown=1001:1001 secret.env /usr/local/bin/.env
 
-# Application des droit au user:group sur le binaire
+# Application des droit RX au user:group sur le binaire
 RUN chmod 550 /usr/local/bin/rust-collector
 
-# Application des droit au user:group sur la config
+# Application des droit RO au user:group sur la config
 RUN chmod 440 /usr/local/bin/.env
 
 # Création d'un utilisateur non-root

@@ -26,5 +26,6 @@ dependencies {
     implementation libs.bundles.retrofit
     
     testImplementation libs.retrofit.mock
+    testImplementation 'org.junit.jupiter:junit-jupiter:6.0.3'
 }
 

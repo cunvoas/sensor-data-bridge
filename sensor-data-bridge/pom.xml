@@ -19,6 +19,10 @@
             <groupId>nl.bertriksikken</groupId>
             <artifactId>cayenne</artifactId>
         </dependency>
+        <dependency>
+          <groupId>com.github.cunvoas</groupId>
+          <artifactId>collector-client</artifactId>
+        </dependency>
 
         <!-- Logging implementation -->
         <dependency>

@@ -1,7 +1,7 @@
 # Dockerfile multi-stage pour rust-collector
-FROM rust:1.77 as builder
+FROM rust:1.95.0-alpine3.21 as builder
 WORKDIR /app
-COPY . .
+COPY ./srv/. .
 RUN cargo build --release
 
 FROM debian:bookworm-slim

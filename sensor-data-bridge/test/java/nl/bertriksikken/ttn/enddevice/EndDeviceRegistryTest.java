@@ -1,0 +1,7 @@
+package nl.bertriksikken.ttn.enddevice;
+
+import org.junit.jupiter.api.Test;
+
+class EndDeviceRegistryTest {
+    // add test methods here
+}
