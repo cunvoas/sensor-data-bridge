@@ -1,5 +1,8 @@
-apply plugin: "application"
-apply plugin: "com.palantir.git-version"
+plugins {
+    alias(libs.plugins.shadow)
+    id 'application'
+    alias(libs.plugins.git.version)
+}
 
 application {
     mainClass = 'nl.bertriksikken.loraforwarder.SensorDataBridge'
@@ -12,8 +15,18 @@ jar {
     }
 }
 
+shadowJar {
+    archiveBaseName.set('sensor-data-bridge-fat')
+    archiveClassifier.set('')
+    mergeServiceFiles() // fixes for SPI and jersey/hk2, etc.
+    manifest {
+        attributes 'Main-Class': 'nl.bertriksikken.loraforwarder.SensorDataBridge'
+    }
+}
+
 dependencies {
     implementation project(":cayenne")
+    implementation project(":collector-client")
 
     implementation libs.slf4j.reload4j
 
@@ -26,6 +39,9 @@ dependencies {
     implementation libs.bundles.retrofit
     
     testImplementation libs.retrofit.mock
-    testImplementation 'org.junit.jupiter:junit-jupiter:6.0.3'
+    testImplementation libs.junit.jupiter
 }
 
+test {
+    useJUnitPlatform()
+}

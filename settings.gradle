@@ -1,5 +1,6 @@
 include 'sensor-data-bridge'
 include 'cayenne'
+include 'collector-client'
 
 // Here we set the overall project name. All other projects are seen as 'sub project' of this root project.
 rootProject.name = 'sensor-data-bridge'

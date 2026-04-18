@@ -10,6 +10,5 @@ repositories {
 }
 
 dependencies {
-    // Add cayenne dependencies here if/when needed
-    testImplementation libs.slf4j.reload4j
+    // Add collector-client dependencies here if/when needed
 }

@@ -18,10 +18,12 @@
         <dependency>
             <groupId>nl.bertriksikken</groupId>
             <artifactId>cayenne</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
           <groupId>com.github.cunvoas</groupId>
           <artifactId>collector-client</artifactId>
+          <version>${project.parent.version}</version>
         </dependency>
 
         <!-- Logging implementation -->
