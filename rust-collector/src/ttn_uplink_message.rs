@@ -27,6 +27,7 @@ pub struct TtnUplinkMessage {
     sf: Option<i32>,
 }
 
+#[allow(dead_code)]
 impl TtnUplinkMessage {
     /// Constructeur principal
     pub fn new(app_id: String, dev_id: String, dev_eui: String, raw_payload: Value, decoded_fields: String, port: i32) -> Self {
