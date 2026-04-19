@@ -6,6 +6,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
+import nl.bertriksikken.loraforwarder.EPayloadEncoding;
+import nl.bertriksikken.ttn.TtnAppConfig.DecoderConfig;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect(getterVisibility = Visibility.NONE)
@@ -22,6 +26,9 @@ public final class TtnConfig {
 
     @JsonProperty("apps")
     private List<TtnAppConfig> apps = new ArrayList<>();
+    
+    @JsonProperty("default_decoder")
+    private DecoderConfig defaultDecoder = new DecoderConfig();
 
     // default no-arg constructor
     public TtnConfig() {
@@ -32,7 +39,28 @@ public final class TtnConfig {
         this.mqttUrl = original.mqttUrl;
         this.identityServerUrl = original.identityServerUrl;
         this.identityServerTimeout = original.identityServerTimeout;
-        this.apps = List.copyOf(original.apps);
+        
+        // propagate defaultDecoder if required
+        if (original.defaultDecoder!=null) {
+        	List<TtnAppConfig> overridedApps = new ArrayList<>();
+        	for (TtnAppConfig app : original.apps) {
+        		
+        		if (EPayloadEncoding.NOT_SET.equals(app.getDecoder().getEncoding())) {
+        			TtnAppConfig ovrCfg=new TtnAppConfig(
+        					app.getName(),
+        					app.getKey(),
+        					original.defaultDecoder
+        					);
+        			overridedApps.add(ovrCfg);
+        		} else {
+        			overridedApps.add(app);
+        		}
+			}
+        	this.apps =overridedApps;
+        } else {
+        	this.apps = List.copyOf(original.apps);
+        }
+        
     }
 
     public void addApp(TtnAppConfig app) {
@@ -53,6 +81,10 @@ public final class TtnConfig {
 
     public List<TtnAppConfig> getApps() {
         return List.copyOf(apps);
+    }
+
+    protected DecoderConfig getDefaultDecoder() {
+        return defaultDecoder;
     }
 
 }

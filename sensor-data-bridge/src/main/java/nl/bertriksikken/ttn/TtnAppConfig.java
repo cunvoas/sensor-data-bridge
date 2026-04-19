@@ -39,10 +39,14 @@ public final class TtnAppConfig {
         return decoder;
     }
 
+    protected void setDecoder(DecoderConfig decoderConfig) {
+        decoder=decoderConfig;
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class DecoderConfig {
         @JsonProperty("encoding")
-        private EPayloadEncoding encoding = EPayloadEncoding.CAYENNE;
+        private EPayloadEncoding encoding=EPayloadEncoding.NOT_SET;
 
         @JsonProperty("properties")
         private JsonNode properties = TextNode.valueOf("");

@@ -6,7 +6,8 @@ public enum EPayloadEncoding {
     CAYENNE("cayenne"),
     APELDOORN("apeldoorn"),
     SOUNDKIT("soundkit"), 
-    JSON("json");
+    JSON("json"), 
+    NOT_SET("not_set");
 
     private final String id;
 
