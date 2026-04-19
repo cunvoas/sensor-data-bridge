@@ -67,6 +67,32 @@ CREATE TABLE IF NOT EXISTS ttn_uplink (
 - [serde](https://serde.rs/) : sérialisation/désérialisation JSON
 - [dotenv](https://docs.rs/dotenv/) : gestion des variables d'environnement
 
+## Organisation des tests
+
+Les tests sont séparés du code source principal selon les bonnes pratiques Rust :
+
+- **Tests unitaires** : ils peuvent être placés dans chaque fichier source sous un module `#[cfg(test)] mod tests { ... }` (non utilisé ici pour garder le code source plus lisible).
+- **Tests d'intégration** : ils sont placés dans le dossier `tests/` à la racine du projet. Par exemple, les tests pour `TtnUplinkMessage` se trouvent dans `tests/ttn_uplink_message.rs`.
+
+### Pourquoi ce split ?
+
+- Le code source de production (`src/`) ne contient que la logique métier.
+- Les tests d'intégration (`tests/`) valident le comportement global et peuvent utiliser l'API publique du crate comme le ferait un utilisateur externe.
+- Cela facilite la maintenance, la lisibilité et l'évolution du projet.
+
+### Ajouter ou lancer les tests
+
+- Pour ajouter un test d'intégration, créez un fichier dans `tests/` et importez les modules publics du projet :
+  ```rust
+  use rust_collector::ttn_uplink_message::TtnUplinkMessage;
+  ```
+- Pour lancer tous les tests :
+  ```sh
+  cargo test
+  ```
+
+- Le fichier `src/lib.rs` expose les modules nécessaires pour les tests d'intégration.
+
 ## Notes
 - Le champ `raw_payload` est stocké en JSON natif (jsonb) dans la base.
 - Le serveur écoute sur le port 8080 par défaut.
