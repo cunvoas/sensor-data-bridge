@@ -39,28 +39,28 @@ public final class TtnConfig {
         this.mqttUrl = original.mqttUrl;
         this.identityServerUrl = original.identityServerUrl;
         this.identityServerTimeout = original.identityServerTimeout;
-        
+        this.defaultDecoder=original.getDefaultDecoder().clone();
+
         // propagate defaultDecoder if required
-        if (original.defaultDecoder!=null) {
-        	List<TtnAppConfig> overridedApps = new ArrayList<>();
-        	for (TtnAppConfig app : original.apps) {
-        		
-        		if (EPayloadEncoding.NOT_SET.equals(app.getDecoder().getEncoding())) {
-        			TtnAppConfig ovrCfg=new TtnAppConfig(
-        					app.getName(),
-        					app.getKey(),
-        					original.defaultDecoder
-        					);
-        			overridedApps.add(ovrCfg);
-        		} else {
-        			overridedApps.add(app);
-        		}
-			}
-        	this.apps =overridedApps;
+        if (original.defaultDecoder != null) {
+            List<TtnAppConfig> overridedApps = new ArrayList<>();
+            for (TtnAppConfig app : original.apps) {
+                if (EPayloadEncoding.NOT_SET.equals(app.getDecoder().getEncoding())) {
+                	
+                	TtnAppConfig ovrCfg = new TtnAppConfig(
+                        app.getName(),
+                        app.getKey(),
+                        original.defaultDecoder.clone()
+                       );
+                    overridedApps.add(ovrCfg);
+                } else {
+                    overridedApps.add(app);
+                }
+            }
+            this.apps = overridedApps;
         } else {
-        	this.apps = List.copyOf(original.apps);
+            this.apps = List.copyOf(original.apps);
         }
-        
     }
 
     public void addApp(TtnAppConfig app) {

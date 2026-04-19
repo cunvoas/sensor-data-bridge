@@ -36,6 +36,7 @@ class TtnConfigTest {
         assertNotNull(ttnNode, "ttn section should exist");
         TtnConfig config = mapper.treeToValue(ttnNode, TtnConfig.class);
         assertEquals(7, config.getApps().size());
+        
         // Only the first app has a decoder, others should get defaultDecoder after copy
         TtnConfig copy = new TtnConfig(config);
         assertEquals(config.getApps().size(), copy.getApps().size());

@@ -70,4 +70,16 @@ public final class SensorDataBridgeConfigTest {
         jsonConfig.add(new JsonDecoderItem("/pm2_5", ESensorItem.PM2_5));
         return new DecoderConfig(EPayloadEncoding.JSON, new POJONode(jsonConfig));
     }
+
+    @Test
+    public void testFromIdCaseInsensitive() {
+        assert EPayloadEncoding.fromId("json") == EPayloadEncoding.JSON;
+        assert EPayloadEncoding.fromId("JSON") == EPayloadEncoding.JSON;
+        assert EPayloadEncoding.fromId("JsOn") == EPayloadEncoding.JSON;
+        assert EPayloadEncoding.fromId("cayenne") == EPayloadEncoding.CAYENNE;
+        assert EPayloadEncoding.fromId("NOT_SET") == EPayloadEncoding.NOT_SET;
+        assert EPayloadEncoding.fromId("not_set") == EPayloadEncoding.NOT_SET;
+        assert EPayloadEncoding.fromId(null) == null;
+        assert EPayloadEncoding.fromId("unknown") == null;
+    }
 }

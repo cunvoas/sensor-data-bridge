@@ -46,13 +46,13 @@ public final class TtnAppConfig {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class DecoderConfig {
         @JsonProperty("encoding")
-        private EPayloadEncoding encoding=EPayloadEncoding.NOT_SET;
+        private EPayloadEncoding encoding = EPayloadEncoding.NOT_SET;
 
         @JsonProperty("properties")
         private JsonNode properties = TextNode.valueOf("");
 
         // jackson no-arg constructor
-        DecoderConfig() {
+        public DecoderConfig() {
         }
 
         public DecoderConfig(EPayloadEncoding encoding, JsonNode properties) {
@@ -64,8 +64,26 @@ public final class TtnAppConfig {
             return encoding;
         }
 
+        public void setEncoding(EPayloadEncoding encoding) {
+            this.encoding = encoding;
+        }
+
         public JsonNode getProperties() {
             return properties;
+        }
+
+        // Ajout d'une méthode de clone dans DecoderConfig
+        @Override
+        public DecoderConfig clone() {
+        	return new DecoderConfig(this.encoding, this.properties);
+        }
+
+        @Override
+        public String toString() {
+            return "DecoderConfig{" +
+                    "encoding=" + encoding +
+                    ", properties=" + properties +
+                    '}';
         }
     }
 
