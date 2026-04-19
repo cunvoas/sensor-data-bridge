@@ -1,4 +1,4 @@
-mod ttn_uplink_message;
+pub mod ttn_uplink_message;
 
 use actix_web::{post, web, App, HttpResponse, HttpServer, Responder};
 use dotenv::dotenv;
