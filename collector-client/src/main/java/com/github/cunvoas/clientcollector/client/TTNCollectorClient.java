@@ -50,7 +50,7 @@ public class TTNCollectorClient {
 			HttpClient client = HttpClient.newHttpClient();
 			HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(collectorUrl))
-				.header("Content-Type", "application/json; utf-8")
+				.header("Content-Type", "application/json")
 				.POST(BodyPublishers.ofString(json))
 				.build();
 			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

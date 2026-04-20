@@ -1,7 +1,9 @@
 package com.github.cunvoas.clientcollector.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.cunvoas.clientcollector.model.TTNCollectedMessage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.*;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
@@ -9,6 +11,9 @@ import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class TTNCollectorClientTest {
 
@@ -37,6 +42,7 @@ public class TTNCollectorClientTest {
 
     @Test
     public void testPostE2E() throws Exception {
+    	
         // Démarre un serveur HTTP local sur un port libre
         HttpServer server = HttpServer.create(new InetSocketAddress(0), 0);
         server.createContext("/uplink", new HttpHandler() {
@@ -63,8 +69,40 @@ public class TTNCollectorClientTest {
         field.setAccessible(true);
         field.set(client, url);
         TTNCollectedMessage msg = new TTNCollectedMessage("appId", "devId", "devEui", new byte[]{1,2,3}, "{}", 1);
+        
         Integer code = client.post(msg);
         assertEquals(200, code);
         server.stop(0);
+    }
+
+    @Test
+//    @Disabled("Test E2E désactivé par défaut : nécessite une API HTTP distante configurée dans .env")
+    public void testPostE2EWithEnvConfig() throws Exception {
+
+    	ObjectMapper mapper= new ObjectMapper();
+    	
+    	
+        // Lit le fichier .env pour récupérer la config
+//        List<String> lines = Files.readAllLines(Paths.get("./.env"));
+//        String host = "localhost";
+//        String port = "5431";
+//        for (String line : lines) {
+//            if (line.startsWith("POSTGRES_HOST=")) host = line.split("=",2)[1];
+//            if (line.startsWith("POSTGRES_PORT=")) port = line.split("=",2)[1];
+//        }
+        // Construit l'URL cible (adapter le endpoint si besoin)
+        String url = "http://localhost:8080/uplink";
+        TTNCollectorClient client = new TTNCollectorClient();
+        java.lang.reflect.Field field = TTNCollectorClient.class.getDeclaredField("collectorUrl");
+        field.setAccessible(true);
+        field.set(client, url);
+        TTNCollectedMessage msg = new TTNCollectedMessage("appId", "devId", "devEui", new byte[]{1,2,3}, "{}", 1);
+        
+
+        System.out.println( mapper.writeValueAsString(msg) );
+        
+        Integer code = client.post(msg);
+        // On accepte 200 ou 201 selon l'API
+        assertTrue(code >= 200 && code <= 201, "Le code HTTP doit être 200 ou 201, reçu: " + code);
     }
 }

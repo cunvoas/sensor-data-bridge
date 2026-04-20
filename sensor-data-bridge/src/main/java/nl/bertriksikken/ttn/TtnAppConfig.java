@@ -26,7 +26,7 @@ public final class TtnAppConfig {
         this.key = key;
         this.decoder = decoder;
     }
-
+    
     public String getName() {
         return name;
     }

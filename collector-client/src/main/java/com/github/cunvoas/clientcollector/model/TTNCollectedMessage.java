@@ -1,16 +1,27 @@
 package com.github.cunvoas.clientcollector.model;
 
-public class TTNCollectedMessage {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class TTNCollectedMessage {
+    @JsonProperty("app_id")
     private final String appId;
+    @JsonProperty("dev_id")
     private final String devId;
+    @JsonProperty("dev_eui")
     private final String devEui;
     private final byte[] rawPayload;
+    @JsonProperty("decoded_fields")
     private final String decodedFields;
+    @JsonProperty("port")
     private final int port;
-    private Double rssi = Double.NaN;
-    private Double snr = Double.NaN;
-    private Integer sf = 0;
+    @JsonProperty("rssi")
+    private Double rssi = null;
+    @JsonProperty("snr")
+    private Double snr = null;
+    @JsonProperty("sf")
+    private Integer sf = null;
 
     public TTNCollectedMessage(String appId, String devId, String devEui, byte[] rawPayload, String decodedFields,
             int port) {
@@ -28,40 +39,21 @@ public class TTNCollectedMessage {
         this.sf = sf;
     }
 
-    public String getAppId() {
-        return appId;
-    }
+    public String getAppId() { return appId; }
+    public String getDevId() { return devId; }
+    public String getDevEui() { return devEui; }
+    public String getDecodedFields() { return decodedFields; }
+    public int getPort() { return port; }
+    public Double getRSSI() { return rssi; }
+    public Double getSNR() { return snr; }
+    public Integer getSF() { return sf; }
 
-    public String getDevId() {
-        return devId;
+    @JsonProperty("raw_payload")
+    public int[] getRawPayloadArray() {
+        int[] arr = new int[rawPayload.length];
+        for (int i = 0; i < rawPayload.length; i++) {
+            arr[i] = rawPayload[i] & 0xFF;
+        }
+        return arr;
     }
-
-    public String getDevEui() {
-        return devEui;
-    }
-
-    public byte[] getRawPayload() {
-        return rawPayload.clone();
-    }
-
-    public String getDecodedFields() {
-        return decodedFields;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public Double getRSSI() {
-        return rssi;
-    }
-
-    public Double getSNR() {
-        return snr;
-    }
-
-    public Integer getSF() {
-        return sf;
-    }
-
 }

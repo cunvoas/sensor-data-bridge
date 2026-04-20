@@ -28,7 +28,7 @@ ttn:
   - name: "sensorcommunity-fake-id_E"
     key: "CAFEFADE901234567890123456789012345678E"
   - name: "sensorcommunity-fake-id_F"
-    key: "CAFEFADE901234567890123456789012345678CF"
+    key: "CAFEFADE901234567890123456789012345678F"
     
   default_decoder:
     encoding: "JSON"
