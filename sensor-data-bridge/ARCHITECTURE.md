@@ -14,11 +14,11 @@ graph TD
         NBIoT[NB-IoT]
     end
     subgraph Bridge
-        MqttListener[MqttListener]
-        SensorDataBridge[SensorDataBridge]
-        Decoder[Decoder (Cayenne/ULM/JSON)]
-        Uploaders[Uploaders (SensCom/OpenSense)]
-        RestAPI[REST API (Jersey)]
+        MqttListener["MqttListener"]
+        SensorDataBridge["SensorDataBridge"]
+        Decoder["Decoder (Cayenne/ULM/JSON)"]
+        Uploaders["Uploaders (SensCom/OpenSense)"]
+        RestAPI["REST API (Jersey)"]
     end
     subgraph Plateformes_Cloud
         SensCom[SensCom]
