@@ -4,7 +4,7 @@ WORKDIR /app
 COPY ./srv/. .
 RUN cargo build --release
 
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 WORKDIR /app
 COPY --from=builder /app/target/release/rust-collector /usr/local/bin/rust-collector
 COPY .env.example .env

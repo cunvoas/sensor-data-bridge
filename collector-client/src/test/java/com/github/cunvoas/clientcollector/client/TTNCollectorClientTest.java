@@ -41,6 +41,37 @@ public class TTNCollectorClientTest {
     }
 
     @Test
+    public void testPostPersistsWhenNoCollector() throws Exception {
+        // ensure failed-ttn directory is clean
+        java.nio.file.Path dir = java.nio.file.Paths.get("failed-ttn");
+        if (Files.exists(dir)) {
+            try (java.util.stream.Stream<java.nio.file.Path> s = Files.list(dir)) {
+                s.forEach(p -> { try { Files.deleteIfExists(p); } catch (Exception e) { } });
+            }
+            Files.deleteIfExists(dir);
+        }
+
+        TTNCollectorClient client = new TTNCollectorClient();
+        // create message
+        TTNCollectedMessage msg = new TTNCollectedMessage("myApp", "myDev", "eui", new byte[]{1}, "{}", 3);
+        Integer res = client.post(msg);
+        // client should not throw and should return -1 when not configured
+        assertEquals(-1, res.intValue());
+
+        // a file should have been created in failed-ttn
+        assertTrue(Files.exists(dir) && Files.isDirectory(dir));
+        try (java.util.stream.Stream<java.nio.file.Path> s = Files.list(dir)) {
+            java.nio.file.Path f = s.findFirst().orElseThrow(() -> new AssertionError("No persisted file found"));
+            String content = Files.readString(f);
+            assertTrue(content.contains("myApp"));
+            assertTrue(content.contains("myDev"));
+            // cleanup
+            Files.deleteIfExists(f);
+        }
+        Files.deleteIfExists(dir);
+    }
+
+    @Test
     public void testPostE2E() throws Exception {
     	
         // Démarre un serveur HTTP local sur un port libre

@@ -32,6 +32,13 @@
             <artifactId>slf4j-reload4j</artifactId>
         </dependency>
 
+        <!-- Flyway pour la gestion des migrations de base de données -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>10.13.0</version>
+        </dependency>
+
         <!-- MQTT -->
         <dependency>
             <groupId>org.eclipse.paho</groupId>
@@ -133,12 +140,31 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <!-- Plugin Maven Flyway pour exécuter les migrations -->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>10.13.0</version>
+                <configuration>
+                    <url>jdbc:postgresql://${FLYWAY_HOSTWITHPORT}/${FLYWAY_DATABASE}</url>
+                    <user>${FLYWAY_USER}</user>
+                    <password>${FLYWAY_PASSWORD}</password>
+                    <schemas>
+                        <schema>public</schema>
+                    </schemas>
+                    <locations>
+                        <location>filesystem:src/main/resources/db/migration</location>
+                    </locations>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
 
 <profiles>
 
+    <!-- deps analysis for security -->
     <!-- deps analysis for security -->
     <profile>
       <id>OWASP</id>

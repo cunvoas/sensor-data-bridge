@@ -1,8 +1,30 @@
 package nl.bertriksikken.loraforwarder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.jar.Manifest;
+
+import org.apache.log4j.PropertyConfigurator;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.github.cunvoas.clientcollector.client.TTNCollectorClient;
+import com.github.cunvoas.clientcollector.model.TTNCollectedMessage;
+
 import nl.bertriksikken.gls.GeoLocationService;
 import nl.bertriksikken.loraforwarder.util.CatchingRunnable;
 import nl.bertriksikken.opensense.OpenSenseUploader;
@@ -22,24 +44,6 @@ import nl.bertriksikken.ttn.TtnUplinkMessage;
 import nl.bertriksikken.ttn.enddevice.EndDevice;
 import nl.bertriksikken.ttn.enddevice.EndDeviceRegistry;
 import nl.bertriksikken.ttn.enddevice.IEndDeviceRegistryRestApi;
-import org.apache.log4j.PropertyConfigurator;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.jar.Manifest;
 
 /**
  * =========================
@@ -104,6 +108,8 @@ public final class SensorDataBridge {
     private final Map<String, CommandHandler> commandHandlers = new HashMap<>();
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private final JsonDecoder jsonDecoder = new JsonDecoder();
+    
+    private final TTNCollectorClient ttnCollectorClient;
 
     public static void main(String[] args) throws IOException, MqttException {
         PropertyConfigurator.configure("log4j.properties");
@@ -145,6 +151,8 @@ public final class SensorDataBridge {
             CommandHandler commandHandler = new CommandHandler(geoLocationService, deviceRegistry);
             commandHandlers.put(appConfig.getName(), commandHandler);
         }
+        
+        ttnCollectorClient = new TTNCollectorClient();
     }
 
     private void messageReceived(TtnAppConfig appConfig, TtnUplinkMessage uplink) {
@@ -251,7 +259,46 @@ public final class SensorDataBridge {
             default:
                 throw new IllegalStateException("Unhandled encoding: " + config.getEncoding());
         }
+        
+        ttnCollectorClient.post(map(uplink));
         return sensorData;
+    }
+    
+    /**
+     * Maps a {@link TtnUplinkMessage} to a {@link TTNCollectedMessage} in a
+     * one-to-one fashion.
+     * <p>
+     * The following fields are copied:
+     * <ul>
+     *   <li>appId, devId, devEui</li>
+     *   <li>rawPayload (byte[] is cloned by the target constructor)</li>
+     *   <li>decodedFields, port</li>
+     * </ul>
+     * Radio parameters (rssi, snr, sf) are set via {@code setRadioParams} only
+     * when they contain valid values: {@code rssi} and {@code snr} must be
+     * finite, and {@code sf} must be &gt; 0. Otherwise the corresponding values
+     * are left null in the produced {@link TTNCollectedMessage}.
+     *
+     * @param uplink the TTN uplink message to map
+     * @return a new {@link TTNCollectedMessage} containing the copied fields
+     */
+    protected TTNCollectedMessage map(TtnUplinkMessage uplink) {
+        // map fields one-to-one from TtnUplinkMessage to TTNCollectedMessage
+        TTNCollectedMessage mapped = new TTNCollectedMessage(
+                uplink.getAppId(),
+                uplink.getDevId(),
+                uplink.getDevEui(),
+                uplink.getRawPayload(),
+                uplink.getDecodedFields(),
+                uplink.getPort());
+
+        // only set radio params when they contain valid values
+        Double rssi = Double.isFinite(uplink.getRSSI()) ? uplink.getRSSI() : null;
+        Double snr = Double.isFinite(uplink.getSNR()) ? uplink.getSNR() : null;
+        Integer sf = uplink.getSF() > 0 ? Integer.valueOf(uplink.getSF()) : null;
+        mapped.setRadioParams(rssi, snr, sf);
+
+        return mapped;
     }
 
     /**

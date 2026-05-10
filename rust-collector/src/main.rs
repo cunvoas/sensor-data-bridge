@@ -1,6 +1,6 @@
 pub mod ttn_uplink_message;
 
-use actix_web::{post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use log::{info, error};
 use dotenv::dotenv;
 use std::env;
@@ -32,6 +32,21 @@ async fn uplink_handler(
     }
 }
 
+#[get("/health")]
+async fn health_handler(db: web::Data<Arc<Client>>) -> impl Responder {
+    // Exécute une requête simple pour valider la connexion à la base
+    match db.query_one("SELECT 1", &[]).await {
+        Ok(_) => {
+            info!("[health_handler] DB OK");
+            HttpResponse::Ok().body("OK")
+        }
+        Err(e) => {
+            error!("[health_handler] DB error: {}", e);
+            HttpResponse::InternalServerError().body(format!("DB error: {}", e))
+        }
+    }
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
@@ -54,6 +69,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(db.clone()))
             .service(uplink_handler)
+            .service(health_handler)
     })
     .bind(("0.0.0.0", 8080))?
     .run();

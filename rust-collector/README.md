@@ -43,6 +43,13 @@ Collecteur REST pour messages TTN uplink, stockage PostgreSQL
 - **POST** `/uplink`
   - Body : JSON conforme à la structure `TtnUplinkMessage`
   - Réponse : `200 OK` si succès, `500` sinon
+ - **GET** `/health`
+   - Vérifie la connexion à la base de données en exécutant une requête simple (`SELECT 1`).
+   - Réponse : `200 OK` et corps `OK` si la base répond correctement, `500` sinon avec l'erreur en corps.
+   - Exemple :
+     ```sh
+     curl -v http://127.0.0.1:8080/health
+     ```
 
 ## Structure de la table PostgreSQL
 Voir `ttn_uplink.sql` :
