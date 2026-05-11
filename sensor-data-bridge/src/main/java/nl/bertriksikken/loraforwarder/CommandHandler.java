@@ -19,7 +19,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Handles commands and response from LoRaWAN devices.
+ * Handles commands and responses from LoRaWAN devices (e.g. processing
+ * downlink responses on the command port).
  */
 public final class CommandHandler {
 

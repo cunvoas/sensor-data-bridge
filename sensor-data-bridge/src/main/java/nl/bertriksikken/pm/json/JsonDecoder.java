@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.bertriksikken.pm.SensorData;
 
 /**
- * Decodes a JSON payload, according to a configuration of JSON path and data
- * items (assuming double).
+ * Decodes a JSON payload into SensorData using a configured list of JSON paths
+ * and mappings.
  */
 public final class JsonDecoder {
 

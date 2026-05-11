@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Record representing a Helium uplink message with payload and optional hotspots.
+ */
 @SuppressWarnings("ArrayRecordComponent")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record HeliumUplinkMessage(

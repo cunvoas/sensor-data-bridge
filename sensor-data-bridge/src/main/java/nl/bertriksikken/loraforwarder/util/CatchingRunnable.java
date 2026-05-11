@@ -3,7 +3,8 @@ package nl.bertriksikken.loraforwarder.util;
 import org.slf4j.Logger;
 
 /**
- * A wrapper around Runnable that catches exceptions and just logs them.
+ * Runnable wrapper that catches any Throwable from the delegate and logs it,
+ * preventing executor threads from dying due to uncaught exceptions.
  */
 public final class CatchingRunnable implements Runnable {
 

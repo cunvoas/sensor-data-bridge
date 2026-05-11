@@ -9,7 +9,7 @@ import nl.bertriksikken.senscom.SensComConfig;
 import nl.bertriksikken.ttn.TtnConfig;
 
 /**
- * Configuration class.
+ * Top-level configuration container for the SensorDataBridge application.
  */
 public final class SensorDataBridgeConfig {
 

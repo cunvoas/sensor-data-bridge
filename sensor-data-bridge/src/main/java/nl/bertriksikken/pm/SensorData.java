@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Collection of measurement items.
+ * Container for sensor measurement items and their timestamps.
  */
 public final class SensorData {
 

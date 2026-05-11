@@ -16,9 +16,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
- * Communicates with the TTN v3 device registry API.<br>
- * <br>
- * https://www.thethingsindustries.com/docs/reference/api/end_device/#the-enddeviceregistry-service
+ * Client for the TTN v3 device registry REST API.
  */
 public final class EndDeviceRegistry {
 

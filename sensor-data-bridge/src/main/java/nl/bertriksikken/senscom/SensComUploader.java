@@ -14,7 +14,8 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Uploader for sensor.community, delegates work to a worker, one for each application.
+ * Uploader for sensor.community that delegates uploads to a per-application
+ * worker.
  */
 public final class SensComUploader implements IUploader {
 

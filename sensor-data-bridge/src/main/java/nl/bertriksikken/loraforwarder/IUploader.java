@@ -4,6 +4,10 @@ import java.util.Map;
 
 import nl.bertriksikken.pm.SensorData;
 
+/**
+ * Interface for uploaders that receive sensor data and forward it to external
+ * services (e.g. sensor.community, OpenSense).
+ */
 public interface IUploader {
 
     void start();

@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Configuration for a generic REST API endpoint (base URL and timeout).
+ */
 @JsonAutoDetect(getterVisibility = Visibility.NONE)
 public class RestApiConfig {
 

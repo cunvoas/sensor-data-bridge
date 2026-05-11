@@ -4,6 +4,9 @@ package nl.bertriksikken.loraforwarder;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * Enumeration of supported payload encodings used to decode uplink messages.
+ */
 public enum EPayloadEncoding {
 
     TTN_ULM("TTN_ULM"),

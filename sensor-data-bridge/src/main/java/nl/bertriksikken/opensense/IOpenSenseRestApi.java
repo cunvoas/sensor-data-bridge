@@ -9,6 +9,9 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+/**
+ * Retrofit REST API for OpenSense (SenseBox) endpoints.
+ */
 public interface IOpenSenseRestApi {
 
     @GET("/boxes/{boxid}")

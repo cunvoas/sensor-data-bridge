@@ -13,6 +13,9 @@ import nl.bertriksikken.ttn.TtnAppConfig.DecoderConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect(getterVisibility = Visibility.NONE)
+/**
+ * Global TTN configuration including MQTT broker and application list.
+ */
 public final class TtnConfig {
 
     @JsonProperty("mqtt_url")

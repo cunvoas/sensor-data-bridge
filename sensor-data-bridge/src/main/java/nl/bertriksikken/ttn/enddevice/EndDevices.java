@@ -6,6 +6,9 @@ import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Wrapper for a list of EndDevice objects returned by the registry API.
+ */
 public final class EndDevices {
 
     @JsonProperty("end_devices")

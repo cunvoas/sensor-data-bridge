@@ -2,6 +2,9 @@ package nl.bertriksikken.nbiot;
 
 import java.util.Locale;
 
+/**
+ * Utility for converting between hex string representations and byte arrays.
+ */
 public final class HexConverter {
     
     private HexConverter() {

@@ -10,6 +10,10 @@ import nl.bertriksikken.ttn.TtnUplinkMessage;
  * https://www.thethingsindustries.com/docs/reference/data-formats/#uplink-messages
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+/**
+ * TTNv3 uplink message DTO used to convert the JSON payload into an internal
+ * TtnUplinkMessage.
+ */
 public final class Ttnv3UplinkMessage {
 
     @JsonProperty("end_device_ids")

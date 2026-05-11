@@ -1,9 +1,8 @@
 package nl.bertriksikken.geo;
 
 /**
- * Classe utilitaire pour le calcul de la distance à vol d'oiseau entre deux points géographiques.
- * Utilise la formule de Haversine.
- * @see https://fr.wikipedia.org/wiki/Formule_de_haversine
+ * Utility class for calculating great-circle (crow-fly) distances between two
+ * geographic coordinates using the Haversine formula.
  */
 public class DistanceHelper {
 	

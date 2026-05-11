@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.node.TextNode;
 
 import nl.bertriksikken.loraforwarder.EPayloadEncoding;
 
+/**
+ * Configuration for a single TTN application (credentials and decoder config).
+ */
 public final class TtnAppConfig {
     @JsonProperty("name")
     private String name = "particulatematter";

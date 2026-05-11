@@ -7,7 +7,8 @@ import java.nio.ByteOrder;
 import nl.bertriksikken.pm.PayloadParseException;
 
 /**
- * Payload message with SPS30 data (mass, count, particle size)
+ * Parser for SPS30 sensor payloads, extracting particulate mass and number
+ * concentrations and typical particle size.
  */
 public final class Sps30Message {
 

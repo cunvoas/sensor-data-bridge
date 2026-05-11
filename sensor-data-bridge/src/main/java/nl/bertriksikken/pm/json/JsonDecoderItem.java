@@ -7,8 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import nl.bertriksikken.pm.ESensorItem;
 
 /**
- * JSON decoder configuration, relates JSON items to their internal
- * representation (SI).
+ * Configuration item mapping a JSON path to an internal ESensorItem and unit.
  */
 public final class JsonDecoderItem {
 

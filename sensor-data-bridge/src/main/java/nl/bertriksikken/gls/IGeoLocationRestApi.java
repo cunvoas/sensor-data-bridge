@@ -6,7 +6,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**
- * See https://ichnaea.readthedocs.io/en/latest/api/geolocate.html
+ * Retrofit interface for a geolocation service API.
  */
 public interface IGeoLocationRestApi {
 
