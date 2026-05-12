@@ -26,7 +26,7 @@ async fn uplink_handler(
             HttpResponse::Ok().body("Saved")
         },
         Err(e) => {
-            error!("[uplink_handler] Erreur d'insert pour app_id={}, dev_id={}: {:?}", m.app_id(), m.dev_id(), e);
+            error!("[uplink_handler] Erreur d'insert pour app_id={}, dev_id={}: {:?}\nBacktrace: {:?}", m.app_id(), m.dev_id(), e, std::backtrace::Backtrace::capture());
             HttpResponse::InternalServerError().body(format!("DB error details: {:?}", e))
         },
     }
@@ -50,24 +50,47 @@ async fn health_handler(db: web::Data<Arc<Client>>) -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
-    env_logger::init();
+    
+    // Tentative d'initialisation de log4rs avec chemin absolu pour la prod (recherche à côté de l'exécutable)
+    let log_config_path = if let Ok(exe_path) = std::env::current_exe() {
+        if let Some(parent) = exe_path.parent() {
+            parent.join("log4rs.yaml")
+        } else {
+            std::path::PathBuf::from("log4rs.yaml")
+        }
+    } else {
+        std::path::PathBuf::from("log4rs.yaml")
+    };
+
+    if let Err(e) = log4rs::init_file(&log_config_path, Default::default()) {
+        eprintln!("ERREUR: Impossible d'initialiser le logger avec {:?}: {}", log_config_path, e);
+        // On essaie de continuer avec env_logger si le fichier de config est absent ou erroné
+        env_logger::init();
+        error!("Échec log4rs, repli sur env_logger: {}", e);
+    }
+    
+    info!("Démarrage du programme rust-collector...");
+    
     let host = env::var("POSTGRES_HOST").unwrap_or_else(|_| "localhost".to_string());
     let user = env::var("POSTGRES_USER").unwrap_or_else(|_| "postgres".to_string());
     let password = env::var("POSTGRES_PASSWORD").unwrap_or_else(|_| "postgres".to_string());
-    let db = env::var("POSTGRES_DB").unwrap_or_else(|_| "ttn".to_string());
+    let db_name = env::var("POSTGRES_DB").unwrap_or_else(|_| "ttn".to_string());
     let port = env::var("POSTGRES_PORT").ok().and_then(|p| if p.is_empty() { None } else { Some(p) }).unwrap_or_else(|| "5432".to_string());
-    let conn_str = format!("host={} user={} password={} dbname={} port={}", host, user, password, db, port);
+    let conn_str = format!("host={} user={} password={} dbname={} port={}", host, user, password, db_name, port);
     let (client, connection) = tokio_postgres::connect(&conn_str, NoTls)
         .await.expect("DB connect");
     tokio::spawn(async move {
         if let Err(e) = connection.await {
-            eprintln!("connection error: {}", e);
+            error!("[main] DB connection error: {:?}", e);
         }
     });
     let db = Arc::new(client);
+    info!("Connexion DB établie sur {}:{}/{}", host, port, db_name);
+
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(db.clone()))
+            .wrap(actix_web::middleware::Logger::default())
             .service(uplink_handler)
             .service(health_handler)
     })
@@ -78,7 +101,7 @@ async fn main() -> std::io::Result<()> {
     // Tâche pour gérer SIGTERM/SIGINT
     let signal_task = tokio::spawn(async move {
         signal::ctrl_c().await.expect("Failed to install signal handler");
-        println!("SIGTERM/SIGINT reçu, arrêt du serveur...");
+        info!("SIGTERM/SIGINT reçu, arrêt du serveur...");
         srv_handle.stop(true).await;
     });
     // Attend la fin du serveur ou du signal

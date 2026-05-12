@@ -46,7 +46,7 @@ Le binaire se trouve dans `target/release/micro-healthcheck-client`.
 
 Ajoutez dans votre Dockerfile :
 ```dockerfile
-HEALTHCHECK CMD ["/distroless-healthcheck-client", "--name", "mon-service", "https://votre-service/health"]
+HEALTHCHECK CMD ["/distroless-healthcheck-client", "--verb", "get", "--log", "info", "--name", "mon-service", "https://votre-service/health"]
 ```
 
 ## Logging

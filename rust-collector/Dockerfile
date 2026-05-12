@@ -9,5 +9,7 @@ WORKDIR /app
 COPY --from=builder /app/target/release/rust-collector /usr/local/bin/rust-collector
 COPY .env.example .env
 COPY ttn_uplink.sql ./
+COPY log4rs.yaml ./
+RUN mkdir -p log
 EXPOSE 8080
 CMD ["/usr/local/bin/rust-collector"]
