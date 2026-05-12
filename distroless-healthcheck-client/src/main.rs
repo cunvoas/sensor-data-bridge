@@ -1,12 +1,16 @@
 use clap::{Parser, ValueEnum};
 use std::sync::mpsc::{self, Sender};
 use std::thread;
+use std::time::Duration;
 use std::sync::OnceLock;
 
+/// Structure gérant l'envoi de messages de log vers un thread dédié à l'écriture.
 struct Logger {
     sender: Sender<String>,
 }
 
+/// Tente de récupérer le nom du conteneur en lisant /etc/hostname.
+/// Retourne "unknown" si la lecture échoue.
 fn get_container_name() -> String {
     use std::fs;
     // Tenter de récupérer le nom de l'hôte qui est souvent l'ID du container par défaut
@@ -17,6 +21,8 @@ fn get_container_name() -> String {
 }
 
 impl Logger {
+    /// Initialise un nouveau logger asynchrone.
+    /// Lance un thread qui écoute sur un canal et écrit dans stdout ainsi que dans un fichier /var/log.
     fn new(container_name: Option<String>) -> Self {
         let (tx, rx) = mpsc::channel::<String>();
         let name = container_name.unwrap_or_else(get_container_name);
@@ -26,12 +32,14 @@ impl Logger {
             use std::fs::OpenOptions;
             use std::io::Write;
 
+            // Tentative d'ouverture du fichier en mode ajout
             let mut file = OpenOptions::new()
                 .create(true)
                 .append(true)
                 .open(&log_file_path)
                 .ok();
 
+            // Boucle de réception des messages de log
             while let Ok(line) = rx.recv() {
                 println!("[LOG] {}", line);
                 if let Some(ref mut f) = file {
@@ -41,6 +49,7 @@ impl Logger {
         });
         Logger { sender: tx }
     }
+    /// Envoie un message au thread de logging.
     fn log(&self, msg: String) {
         let _ = self.sender.send(msg);
     }
@@ -48,23 +57,30 @@ impl Logger {
 
 impl Drop for Logger {
     fn drop(&mut self) {
-        // Dropping sender will close the channel, triggering final flush
+        // La fermeture du canal (sender) signalera au thread de s'arrêter proprement
     }
 }
 
+/// Global unique instance du logger, initialisée une seule fois.
 static LOGGER: OnceLock<Logger> = OnceLock::new();
 
 use std::sync::atomic::{AtomicU8, Ordering};
 
+/// Niveaux de log supportés.
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, ValueEnum)]
 enum LogLevel {
+    /// Pas de logs.
     Mute = 0,
+    /// Logs standards (Info).
     Info = 1,
+    /// Logs détaillés (Trace).
     Trace = 2,
 }
 
+/// Niveau de log global stocké de manière atomique.
 static LOG_LEVEL: AtomicU8 = AtomicU8::new(LogLevel::Info as u8);
 
+/// Définit le niveau de log à partir des arguments CLI ou de la variable d'environnement LOG_LEVEL.
 fn set_log_level_from_args_env(args_level: Option<LogLevel>) {
     use std::env;
     if let Some(lvl) = args_level {
@@ -80,6 +96,7 @@ fn set_log_level_from_args_env(args_level: Option<LogLevel>) {
     LOG_LEVEL.store(lvl as u8, Ordering::Relaxed);
 }
 
+/// Fonction utilitaire pour logger un message si le niveau actuel le permet.
 fn log_simple(level: LogLevel, msg: &str) {
     let current = match LOG_LEVEL.load(Ordering::Relaxed) {
         0 => LogLevel::Mute,
@@ -97,6 +114,7 @@ fn log_simple(level: LogLevel, msg: &str) {
     }
 }
 
+/// Arguments de la ligne de commande.
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
@@ -116,6 +134,7 @@ struct Args {
     container_name: Option<String>,
 }
 
+/// Verbes HTTP supportés.
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
 enum HttpVerb {
     GET,
@@ -123,17 +142,25 @@ enum HttpVerb {
 }
 
 fn main() {
+    // Analyse des arguments et initialisation des globales
     let args = Args::parse();
     set_log_level_from_args_env(args.log_level);
     LOGGER.set(Logger::new(args.container_name)).ok();
+    
     log_simple(LogLevel::Info, "Démarrage du healthcheck");
+
+    // Configuration du client HTTP ureq
     let agent = ureq::AgentBuilder::new()
-        .timeout(std::time::Duration::from_secs(args.timeout))
+        .timeout(Duration::from_secs(args.timeout))
         .build();
+
+    // Exécution de la requête selon le verbe choisi
     let result = match args.verb {
         HttpVerb::GET => agent.get(&args.url).call(),
         HttpVerb::HEAD => agent.head(&args.url).call(),
     };
+
+    // Traitement du résultat et sortie avec le code approprié pour Docker
     match result {
         Ok(resp) if resp.status() == 200 => {
             log_simple(LogLevel::Info, &format!("Healthcheck OK: {} {} => {}", args.verb as u8, args.url, resp.status()));
