@@ -17,7 +17,7 @@ async fn uplink_handler(
     let m = msg.into_inner();
     info!("[uplink_handler] Reçu uplink: app_id={}, dev_id={}, dev_eui={}", m.app_id(), m.dev_id(), m.dev_eui());
     let res = db.execute(
-        "INSERT INTO ttn_uplink (app_id, dev_id, dev_eui, raw_payload, decoded_fields, port, rssi, snr, sf) VALUES ($1,$2,$3,$4::jsonb,$5,$6,$7,$8,$9)",
+        "INSERT INTO ttn_uplink (app_id, dev_id, dev_eui, raw_payload, decoded_fields, port, rssi, snr, sf) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
         &[&m.app_id(), &m.dev_id(), &m.dev_eui(), &m.raw_payload(), &m.decoded_fields(), &m.port(), &m.rssi(), &m.snr(), &m.sf()]
     ).await;
     match res {
@@ -26,8 +26,8 @@ async fn uplink_handler(
             HttpResponse::Ok().body("Saved")
         },
         Err(e) => {
-            error!("[uplink_handler] Erreur d'insert pour app_id={}, dev_id={}: {}", m.app_id(), m.dev_id(), e);
-            HttpResponse::InternalServerError().body(format!("DB error: {}", e))
+            error!("[uplink_handler] Erreur d'insert pour app_id={}, dev_id={}: {:?}", m.app_id(), m.dev_id(), e);
+            HttpResponse::InternalServerError().body(format!("DB error details: {:?}", e))
         },
     }
 }
