@@ -1,6 +1,6 @@
 [versions]
 errorprone = "2.48.0"
-jackson = "2.21.1"
+jackson = "2.22.4"
 jersey = "4.0.2"
 junit = "5.10.2"
 mockito = "5.22.0"
